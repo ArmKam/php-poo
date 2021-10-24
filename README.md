@@ -1,0 +1,3 @@
+# php-poo
+
+Symple php project for learning purposes...
