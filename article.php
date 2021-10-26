@@ -10,7 +10,8 @@
  * 
  * On va ensuite afficher l'article puis ses commentaires
  */
-
+require_once('./libraries/database.php');
+require_once('./libraries/utils.php');
 /**
  * 1. Récupération du param "id" et vérification de celui-ci
  */
@@ -35,38 +36,48 @@ if (!$article_id) {
  * 
  * PS : Vous remarquez que ce sont les mêmes lignes que pour l'index.php ?!
  */
-$pdo = new PDO('mysql:host=localhost:8889;dbname=blogpoo;charset=utf8', 'root', 'root', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+//$pdo = getPdo(); on n'utilise plus donc on le comments
+
 
 /**
  * 3. Récupération de l'article en question
  * On va ici utiliser une requête préparée car elle inclue une variable qui provient de l'utilisateur : Ne faites
  * jamais confiance à ce connard d'utilisateur ! :D
  */
-$query = $pdo->prepare("SELECT * FROM articles WHERE id = :article_id");
 
-// On exécute la requête en précisant le paramètre :article_id 
-$query->execute(['article_id' => $article_id]);
+// $query = $pdo->prepare("SELECT * FROM articles WHERE id = :article_id");
 
-// On fouille le résultat pour en extraire les données réelles de l'article
-$article = $query->fetch();
+// // On exécute la requête en précisant le paramètre :article_id 
+// $query->execute(['article_id' => $article_id]);
+
+// // On fouille le résultat pour en extraire les données réelles de l'article
+// $article = $query->fetch();
+
+$article = findArticle($article_id);
 
 /**
  * 4. Récupération des commentaires de l'article en question
  * Pareil, toujours une requête préparée pour sécuriser la donnée filée par l'utilisateur (cet enfoiré en puissance !)
  */
-$query = $pdo->prepare("SELECT * FROM comments WHERE article_id = :article_id");
-$query->execute(['article_id' => $article_id]);
-$commentaires = $query->fetchAll();
+// $query = $pdo->prepare("SELECT * FROM comments WHERE article_id = :article_id");
+// $query->execute(['article_id' => $article_id]);
+// $commentaires = $query->fetchAll();
 
+$commentaires = findAllComments($article_id);
 /**
  * 5. On affiche 
  */
 $pageTitle = $article['title'];
-ob_start();
-require('templates/articles/show.html.php');
-$pageContent = ob_get_clean();
 
-require('templates/layout.html.php');
+render(
+    'articles/show',
+    //  [
+    //     "page_title"    => $pageTitle,
+    //     "article_id"    => $article,
+    //     "article"       => $article,
+    //     "commentaires"  => $commentaires
+    // ]
+    //compacte methode permet de comme nom d'écrire just des clef de tableau associatif
+    //ça me mermet de créer un tableau associatif à partir du nom des variables que je mets dedans
+    compact('article', 'commentaires', "pageTitle", 'article_id')
+);

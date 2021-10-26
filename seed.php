@@ -1,11 +1,8 @@
 <?php
 
 require('vendor/autoload.php');
-
-$pdo = new PDO('mysql:host=localhost;dbname=blogpoo;charset=utf8', 'root', '', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+require_once('./libraries/database.php');
+$pdo = getPdo();
 
 $articleQuery = $pdo->prepare("INSERT INTO articles SET title = :title, slug = :slug, created_at = :created_at, introduction = :introduction, content = :content");
 $commentQuery = $pdo->prepare("INSERT INTO comments SET article_id = :article_id, author = :author, created_at = :created_at, content = :content");

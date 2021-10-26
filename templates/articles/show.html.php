@@ -5,9 +5,9 @@
 <?= $article['content'] ?>
 
 <?php if (count($commentaires) === 0) : ?>
-    <h2>Il n'y a pas encore de commentaires pour cet article ... SOYEZ LE PREMIER ! :D</h2>
+    <h2>Il n'y a pas encore de commentaires pour cet article ... SOYEZ LE PREMIER !😎</h2>
 <?php else : ?>
-    <h2>Il y a déjà <?= count($commentaires) ?> réactions : </h2>
+    <h2>Il y a déjà <?= count($commentaires) ?> réactions : </h2>  
     <?php foreach ($commentaires as $commentaire) : ?>
         <h3>Commentaire de <?= $commentaire['author'] ?></h3>
         <small>Le <?= $commentaire['created_at'] ?></small>

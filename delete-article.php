@@ -1,5 +1,7 @@
 <?php
 
+require_once('./libraries/database.php');
+require_once('./libraries/utils.php');
 /**
  * DANS CE FICHIER, ON CHERCHE A SUPPRIMER L'ARTICLE DONT L'ID EST PASSE EN GET
  * 
@@ -24,28 +26,27 @@ $id = $_GET['id'];
  * 
  * PS : Vous remarquez que ce sont les mêmes lignes que pour l'index.php ?!
  */
-$pdo = new PDO('mysql:host=localhost;dbname=blogpoo;charset=utf8', 'root', '', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+$pdo = getPdo();
 
 /**
  * 3. Vérification que l'article existe bel et bien
  */
-$query = $pdo->prepare('SELECT * FROM articles WHERE id = :id');
-$query->execute(['id' => $id]);
-if ($query->rowCount() === 0) {
+$article = findArticle($id);
+if (!$article) {
     die("L'article $id n'existe pas, vous ne pouvez donc pas le supprimer !");
 }
 
 /**
  * 4. Réelle suppression de l'article
  */
-$query = $pdo->prepare('DELETE FROM articles WHERE id = :id');
-$query->execute(['id' => $id]);
+// $query = $pdo->prepare('DELETE FROM articles WHERE id = :id');
+// $query->execute(['id' => $id]);
 
+deleteArticle($id);
 /**
  * 5. Redirection vers la page d'accueil
  */
-header("Location: index.php");
-exit();
+// header("Location: index.php");
+// exit();
+
+redirect('index.php');
