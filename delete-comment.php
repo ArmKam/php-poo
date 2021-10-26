@@ -2,6 +2,9 @@
 
 require_once('./libraries/database.php');
 require_once('./libraries/utils.php');
+require_once('./libraries/models/Comment.php');
+
+$commentModel = new Comment();
 /**
  * DANS CE FICHIER ON CHERCHE A SUPPRIMER LE COMMENTAIRE DONT L'ID EST PASSE EN PARAMETRE GET !
  * 
@@ -27,14 +30,15 @@ $id = $_GET['id'];
  * 
  * PS : Vous remarquez que ce sont les mêmes lignes que pour l'index.php ?!
  */
-$pdo = getPdo();
+// header$pdo = getPdo();
 
 /**
  * 3. Vérification de l'existence du commentaire
  */
-$query = $pdo->prepare('SELECT * FROM comments WHERE id = :id');
-$query->execute(['id' => $id]);
-if ($query->rowCount() === 0) {
+// $query = $pdo->prepare('SELECT * FROM comments WHERE id = :id');
+// $query->execute(['id' => $id]);
+$commentaire = $commentModel->find($id);
+if (!$commentaire) {
     die("Aucun commentaire n'a l'identifiant $id !");
 }
 
@@ -43,12 +47,13 @@ if ($query->rowCount() === 0) {
  * On récupère l'identifiant de l'article avant de supprimer le commentaire
  */
 
-$commentaire = $query->fetch();
+// $commentaire = $query->fetch();
+
 $article_id = $commentaire['article_id'];
 
-$query = $pdo->prepare('DELETE FROM comments WHERE id = :id');
-$query->execute(['id' => $id]);
-
+// $query = $pdo->prepare('DELETE FROM comments WHERE id = :id');
+// $query->execute(['id' => $id]);
+$commentModel->delete($id);
 /**
  * 5. Redirection vers l'article en question
  */

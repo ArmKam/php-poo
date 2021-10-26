@@ -2,6 +2,9 @@
 
 require_once('./libraries/database.php');
 require_once('./libraries/utils.php');
+require_once('./libraries/models/Article.php');
+
+$articleModel = new Article();
 /**
  * DANS CE FICHIER, ON CHERCHE A SUPPRIMER L'ARTICLE DONT L'ID EST PASSE EN GET
  * 
@@ -31,7 +34,7 @@ $pdo = getPdo();
 /**
  * 3. Vérification que l'article existe bel et bien
  */
-$article = findArticle($id);
+$article = $articleModel->find($id);
 if (!$article) {
     die("L'article $id n'existe pas, vous ne pouvez donc pas le supprimer !");
 }
@@ -42,7 +45,7 @@ if (!$article) {
 // $query = $pdo->prepare('DELETE FROM articles WHERE id = :id');
 // $query->execute(['id' => $id]);
 
-deleteArticle($id);
+$articleModel->delete($id);
 /**
  * 5. Redirection vers la page d'accueil
  */
